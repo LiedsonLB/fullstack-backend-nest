@@ -1,98 +1,165 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Desafio Fullstack NestJS - API de Encurtamento de URLs (Francisco Liédson)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+![Logo NeoShortener](/snapshots/logo.png)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Sobre o Projeto
 
-## Description
+Este projeto consiste em uma API RESTful desenvolvida em NestJS para encurtamento e gerenciamento de URLs.
+A aplicação permite criar URLs curtas, redirecioná-las para o endereço original, consultar todas as URLs cadastradas e contabilizar o número de acessos (hits).
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+O desenvolvimento prioriza boas práticas de arquitetura, com camadas bem definidas (Controller, Service, Prisma Service), validações, logs, utilização correta de códigos HTTP e integração com PostgreSQL via Prisma ORM.
 
-## Project setup
+## Tecnologias Utilizadas
 
-```bash
-$ npm install
+<div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center"> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" width="45" height="45"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg" width="45" height="45"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="45" height="45"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" width="45" height="45"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg" width="45" height="45"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/insomnia/insomnia-original.svg" width="45" height="45"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" width="45" height="45"/> </div>
+
+## Objetivos do Desafio
+
+- Criar uma API RESTful para encurtamento de URLs
+- Registrar quantidade de acessos por URL
+- Redirecionar URLs encurtadas
+- Implementar arquitetura escalável com NestJS
+- Utilizar Prisma como camada de persistência
+- Fornecer respostas consistentes e seguras
+
+## Funcionalidades
+
+1. Criar URL encurtada.
+2. Redirecionar URL curta.
+3. Listar URLs criadas.
+4. Contabilizar acessos (hits).
+5. Expiração opcional por dias.
+6. Validações com Form Request.
+
+## Endpoints
+
+Responsável pelo gerenciamento de URLs, incluindo criação, consulta, atualização e exclusão de URLs.
+
+### Headers
+- Content-Type: application/json
+- Accept: application/json
+
+| **Método** | **Endpoint**         | **Descrição**                                     |
+| ---------- | -------------------- | ------------------------------------------------- |
+| POST       | `/api/v1/urls`       | Cria uma nova URL encurtada                       |
+| GET        | `/api/v1/urls`       | Lista todas as URLs criadas                       |
+| GET        | `/{code}`            | Redireciona para a URL original e incrementa hits |
+| GET        | `/api/v1/urls/{id}`  | Retorna detalhes de uma URL                       |
+
+---
+Dados de Entrada: 
+```javascript
+{
+  "originalUrl": "https://liedsonbarros.vercel.app"
+} 
+```
+Dados de Saída:
+```javascript
+{
+  "id": 1,
+  "code": "Xy7kL",
+  "short_url": "http://localhost:3000/Xy7kL",
+  "original_url": "https://liedsonbarros.vercel.app",
+  "expires_at": null,
+  "hits": 0,
+  "created_at": "2025-11-29T18:01:05.000Z"
+}
+ 
+```
+---
+
+## Configuração do Projeto
+
+```javascript
+src/
+ ├── controllers/
+ │    └── urls.controller.ts
+ ├── services/
+ │    └── urls.service.ts
+ ├── prisma/
+ │    └── prisma.service.ts
+ ├── app.module.ts
+ └── main.ts
 ```
 
-## Compile and run the project
+### Pré-requisitos
 
+- npm ou yarn
+- Node.js 20+
+- NestJS CLI
+- PostgreSQL
+- Prisma ORM
+- Docker (opcional): Caso prefira não instalar o PostgreSQL localmente, você pode usar o container Docker fornecido no `docker-compose.yml` para rodar o banco de dados criando uma pasta como volume no próprio projeto.
+
+### Passos para Executar Localmente
+
+####  Clone o repositório:
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone https://github.com/LiedsonLB/fullstack-backend-nest.git
 ```
 
-## Run tests
-
+### Rodando o banco de dados com Docker (opcional)
+Na raiz do projeto, execute:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up -d
 ```
+
+#### Instalando dependências:
+```bash
+cd fullstack-backend-nest
+npm install
+```
+
+#### Configure o arquivo .env:
+Edite o arquivo `.env` para configurar a conexão com o banco de dados PostgreSQL (Mas a .env não está no .gitignore):
+```
+DATABASE_URL=postgresql://admin:admin@localhost:5432/encurtador?schema=public
+```
+
+#### Execute as migrações do Prisma:
+```bash
+npx prisma migrate deploy
+```
+#### Gere o cliente Prisma:
+```bash
+npx prisma generate
+```
+#### Inicie a aplicação:
+```bash
+npm run start:dev
+```
+A aplicação estará disponível em `http://localhost:3000`.
+
+## Estrutura do Banco de Dados
+### Tabelas
+- urls
+  - id (bigint, primary key)
+  - originalUrl (string)
+  - shortCode (string, unique)
+  - hits (integer, default 0)
+  - expiresAt (timestamp, nullable)
+  - createdAt (timestamp)
+  
+## Imagens do Projeto
+
+## Tabela do Banco de Dados
+![Tabela do Banco de Dados imagem](/snapshots/database.png)
+
+<!-- aqui vai ser a requisição POST -->
+### Requisição POST para criar URL encurtada
+![Requisição POST imagem](/snapshots/post_url_shortener.PNG)
+
+### Requisição GET para Listar informações da URL encurtada
+![Resposta POST imagem](/snapshots/get_url_shortener.PNG)
+
+### Requisição GET para Listar as URLs encurtada
+![Requisição GET imagem](/snapshots/get_urls_shortener.PNG)
+
 
 ## Deployment
+O projeto está sendo preparado para deploy em serviços como Render.
+Status atual: Em desenvolvimento (29/11/2025)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Releases
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- Release v1.0 ✅
